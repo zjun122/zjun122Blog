@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjun122.mapper.ArticleMapper">
+
+    <resultMap id="BaseResultMap" type="com.zjun122.domain.entity.Article">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="summary" column="summary" jdbcType="VARCHAR"/>
+            <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
+            <result property="thumbnail" column="thumbnail" jdbcType="VARCHAR"/>
+            <result property="isTop" column="is_top" jdbcType="CHAR"/>
+            <result property="status" column="status" jdbcType="CHAR"/>
+            <result property="viewCount" column="view_count" jdbcType="BIGINT"/>
+            <result property="isComment" column="is_comment" jdbcType="CHAR"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,content,
+        summary,category_id,thumbnail,
+        is_top,status,view_count,
+        is_comment,create_by,create_time,
+        update_by,update_time,del_flag
+    </sql>
+    <insert id="addArticleAndTag">
+        insert into zj_blog.zj_article_tag values
+        <foreach collection="tags" item="tag" separator="," >
+            (#{id}, #{tag})
+        </foreach>
+    </insert>
+    <delete id="delArticleAndTag">
+        delete from zj_blog.zj_article_tag where article_id = #{id}
+    </delete>
+    <select id="getArticleAndTags" resultType="java.lang.Long">
+        select zt.tag_id from
+            zj_article_tag zt
+                LEFT JOIN
+            zj_tag t on zt.tag_id = t.id
+        where zt.article_id = #{id} and
+            t.del_flag = 0
+    </select>
+
+</mapper>
